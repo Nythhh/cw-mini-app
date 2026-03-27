@@ -1,0 +1,16 @@
+.claude/
+
+node_modules
+.next
+out
+dist
+coverage
+*.log
+*.tsbuildinfo
+.vercel
+.env
+.env.local
+.env*.local
+
+# Stock admin (dev local)
+data/products-store.json
