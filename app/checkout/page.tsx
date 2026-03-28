@@ -16,8 +16,14 @@ import { useCart } from "@/hooks/useCart";
 import { useCheckoutFormPersist } from "@/hooks/useCheckoutFormPersist";
 import { CONTACT_LINKS, DELIVERY_LABEL } from "@/lib/constants";
 import { formatPrice } from "@/lib/format";
-import { applyPromoCode } from "@/lib/promo-codes";
 import type { ContactMethod } from "@/types/checkout";
+
+type AppliedPromo = {
+  code: string;
+  label: string;
+  discountAmount: number;
+  totalAfter: number;
+};
 
 const CTA_LABELS: Record<ContactMethod, string> = {
   whatsapp: "WhatsApp — message prêt à envoyer",
@@ -33,34 +39,51 @@ export default function CheckoutPage(): JSX.Element {
 
   const [copiedFor, setCopiedFor] = useState<ContactMethod | null>(null);
   const [promoInput, setPromoInput] = useState("");
-  const [appliedCode, setAppliedCode] = useState<string | null>(null);
+  const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
-
-  const activePromo = useMemo(() => {
-    if (!appliedCode) return null;
-    const r = applyPromoCode(subtotal, appliedCode);
-    return r.ok ? r : null;
-  }, [appliedCode, subtotal]);
+  const [applyingPromo, setApplyingPromo] = useState(false);
 
   useEffect(() => {
-    if (!appliedCode) return;
-    const r = applyPromoCode(subtotal, appliedCode);
-    if (!r.ok) {
-      setAppliedCode(null);
-      setPromoError("Promo non applicable — panier modifié.");
-    }
-  }, [appliedCode, subtotal]);
+    if (!appliedPromo?.code) return;
+    let cancelled = false;
+    (async () => {
+      const res = await fetch("/api/promo/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: appliedPromo.code, subtotal })
+      });
+      const data = (await res.json()) as
+        | { ok: true; code: string; label: string; discountAmount: number; totalAfter: number }
+        | { ok: false; error?: string };
+      if (cancelled) return;
+      if (!data.ok) {
+        setAppliedPromo(null);
+        setPromoError(data.error ?? "Promo non applicable — panier modifié.");
+        return;
+      }
+      setPromoError(null);
+      setAppliedPromo({
+        code: data.code,
+        label: data.label,
+        discountAmount: data.discountAmount,
+        totalAfter: data.totalAfter
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [subtotal, appliedPromo?.code]);
 
   const promoLine = useMemo(() => {
-    if (!activePromo) return null;
+    if (!appliedPromo) return null;
     return {
-      code: activePromo.code,
-      discountAmount: activePromo.discountAmount,
-      total: activePromo.totalAfter
+      code: appliedPromo.code,
+      discountAmount: appliedPromo.discountAmount,
+      total: appliedPromo.totalAfter
     };
-  }, [activePromo]);
+  }, [appliedPromo]);
 
-  const totalToPay = activePromo?.totalAfter ?? subtotal;
+  const totalToPay = appliedPromo?.totalAfter ?? subtotal;
 
   const canFinalize =
     form.firstName.trim().length > 0 &&
@@ -79,20 +102,45 @@ export default function CheckoutPage(): JSX.Element {
     [form.address, form.note, form.phone, items, promoLine]
   );
 
-  const handleApplyPromo = useCallback(() => {
+  const handleApplyPromo = useCallback(async () => {
     setPromoError(null);
-    const r = applyPromoCode(subtotal, promoInput);
-    if (!r.ok) {
-      setPromoError(r.error);
-      setAppliedCode(null);
-      return;
+    setApplyingPromo(true);
+    try {
+      const res = await fetch("/api/promo/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: promoInput.trim(), subtotal })
+      });
+      const data = (await res.json().catch(() => ({}))) as
+        | { ok: true; code: string; label: string; discountAmount: number; totalAfter: number }
+        | { ok: false; error?: string };
+      if (!res.ok) {
+        setPromoError("Erreur serveur");
+        setAppliedPromo(null);
+        return;
+      }
+      if (!data.ok) {
+        setPromoError(data.error ?? "Code invalide");
+        setAppliedPromo(null);
+        return;
+      }
+      setAppliedPromo({
+        code: data.code,
+        label: data.label,
+        discountAmount: data.discountAmount,
+        totalAfter: data.totalAfter
+      });
+      setPromoInput(data.code);
+    } catch {
+      setPromoError("Erreur réseau");
+      setAppliedPromo(null);
+    } finally {
+      setApplyingPromo(false);
     }
-    setAppliedCode(r.code);
-    setPromoInput(r.code);
   }, [promoInput, subtotal]);
 
   const handleRemovePromo = useCallback(() => {
-    setAppliedCode(null);
+    setAppliedPromo(null);
     setPromoError(null);
   }, []);
 
@@ -221,9 +269,10 @@ export default function CheckoutPage(): JSX.Element {
         onInputChange={handlePromoInputChange}
         onApply={handleApplyPromo}
         onRemove={handleRemovePromo}
-        applied={Boolean(activePromo)}
-        appliedLabel={activePromo?.label}
+        applied={Boolean(appliedPromo)}
+        appliedLabel={appliedPromo?.label}
         error={promoError}
+        applying={applyingPromo}
       />
 
       <OrderSummaryCard

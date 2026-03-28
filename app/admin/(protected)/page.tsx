@@ -7,19 +7,20 @@ import { Plus, Package } from "lucide-react";
 import { SectionTitle } from "@/components/shared/section-title";
 import { EmptyState } from "@/components/shared/empty-state";
 import { CategoryManager } from "@/components/admin/category-manager";
+import { PromoManager } from "@/components/admin/promo-manager";
 import { Badge } from "@/components/ui/badge";
-import { formatPrice } from "@/lib/format";
+import { formatGrams, formatPrice } from "@/lib/format";
 import type { Product } from "@/types/product";
 
 function stockColor(stock: number): string {
   if (stock === 0) return "text-red-400";
-  if (stock <= 5) return "text-orange-400";
+  if (stock <= 20) return "text-orange-400";
   return "text-accent";
 }
 
 function stockLabel(stock: number): string {
   if (stock === 0) return "Rupture";
-  return `${stock} en stock`;
+  return `${formatGrams(stock)} dispo`;
 }
 
 export default function AdminPage(): JSX.Element {
@@ -36,11 +37,12 @@ export default function AdminPage(): JSX.Element {
   }, []);
 
   return (
-    <div className="space-y-4 pt-4 pb-24">
+    <div className="space-y-4 px-4 pt-2 pb-24">
       <SectionTitle title="Admin" subtitle="Gestion des produits" />
 
-      {/* Category management */}
       <CategoryManager />
+
+      <PromoManager />
 
       {loading && <p className="text-sm text-foreground-muted">Chargement…</p>}
 
@@ -96,7 +98,6 @@ export default function AdminPage(): JSX.Element {
         ))}
       </div>
 
-      {/* FAB */}
       <Link
         href="/admin/product/new"
         aria-label="Ajouter un produit"

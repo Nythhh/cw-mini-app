@@ -51,12 +51,12 @@ export default function EditProductPage(): JSX.Element {
   }, [params.id, router]);
 
   if (loading) {
-    return <p className="pt-8 text-sm text-foreground-muted">Chargement…</p>;
+    return <p className="px-4 pt-8 text-sm text-foreground-muted">Chargement…</p>;
   }
 
   if (!product) {
     return (
-      <div className="space-y-4 pt-4">
+      <div className="space-y-4 px-4 pt-4">
         <Link
           href="/admin"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground-muted transition-colors hover:text-accent"
@@ -73,7 +73,7 @@ export default function EditProductPage(): JSX.Element {
   }
 
   return (
-    <div className="space-y-4 pt-4">
+    <div className="space-y-4 px-4 pt-4 pb-24">
       <Link
         href="/admin"
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground-muted transition-colors hover:text-accent"

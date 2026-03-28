@@ -1,7 +1,12 @@
 import { put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireAdminApi } from "@/lib/require-admin-api";
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  const denied = requireAdminApi(req);
+  if (denied) return denied;
+
   const form = await req.formData();
   const file = form.get("file");
 

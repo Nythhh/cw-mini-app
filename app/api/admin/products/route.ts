@@ -2,12 +2,16 @@ import { randomUUID } from "crypto";
 
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireAdminApi } from "@/lib/require-admin-api";
 import { productCreateSchema } from "@/lib/validations/product";
 import { uniqueSlug } from "@/lib/slug";
 import { getProducts, saveProducts } from "@/lib/products-repository";
 import type { Product } from "@/types/product";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  const denied = requireAdminApi(req);
+  if (denied) return denied;
+
   let body: unknown;
   try {
     body = await req.json();

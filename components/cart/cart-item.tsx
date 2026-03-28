@@ -15,8 +15,16 @@ interface CartItemProps {
 export function CartItem({ item, onQuantityChange, onRemove }: CartItemProps): JSX.Element {
   return (
     <div className="flex gap-3 rounded-2xl bg-surface p-3 neon-border">
-      <div className="h-18 w-18 shrink-0 overflow-hidden rounded-xl bg-surface-raised">
-        <img src={item.product.image} alt={item.product.name} className="h-full w-full object-cover" />
+      <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-surface-raised ring-1 ring-border/30">
+        {/* eslint-disable-next-line @next/next/no-img-element -- remote product URLs from blob */}
+        <img
+          src={item.product.image}
+          alt={item.product.name}
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          loading="lazy"
+          decoding="async"
+          sizes="64px"
+        />
       </div>
       <div className="flex min-w-0 flex-1 flex-col justify-between">
         <div className="flex items-start justify-between gap-2">
@@ -37,7 +45,12 @@ export function CartItem({ item, onQuantityChange, onRemove }: CartItemProps): J
           </button>
         </div>
         <div className="flex items-center justify-between">
-          <QuantitySelector quantity={item.quantity} max={item.product.stock} onChange={onQuantityChange} />
+          <QuantitySelector
+            quantity={item.quantity}
+            max={item.product.stock}
+            onChange={onQuantityChange}
+            unit="g"
+          />
           <span className="text-sm font-bold text-accent neon-text">
             {formatPrice(item.product.price * item.quantity)}
           </span>

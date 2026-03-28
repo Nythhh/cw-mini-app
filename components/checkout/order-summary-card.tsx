@@ -1,4 +1,4 @@
-import { formatPrice } from "@/lib/format";
+import { formatGrams, formatPrice } from "@/lib/format";
 import { DELIVERY_LABEL } from "@/lib/constants";
 import type { CartItem } from "@/types/cart";
 
@@ -28,7 +28,8 @@ export function buildOrderSummaryText(params: OrderSummaryCardProps): string {
     "🌿 CW / Canna-Weed Order",
     "",
     ...params.items.map(
-      (i) => `- ${i.product.name} x${i.quantity} (${i.product.format}) = ${formatPrice(i.product.price * i.quantity)}`
+      (i) =>
+        `- ${i.product.name} ${formatGrams(i.quantity)} = ${formatPrice(i.product.price * i.quantity)}`
     ),
     "",
     `📦 ${DELIVERY_LABEL}`,
@@ -62,7 +63,7 @@ export function OrderSummaryCard({ items, phone, address, note, promo }: OrderSu
           <div key={item.product.id} className="flex items-start justify-between gap-2">
             <span className="text-foreground-muted">
               {item.product.name}{" "}
-              <span className="text-foreground-muted/50">×{item.quantity}</span>
+              <span className="text-foreground-muted/50">{formatGrams(item.quantity)}</span>
             </span>
             <span className="font-bold text-foreground">
               {formatPrice(item.product.price * item.quantity)}

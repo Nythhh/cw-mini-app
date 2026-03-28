@@ -25,7 +25,7 @@ export default function NewProductPage(): JSX.Element {
   }, [router]);
 
   return (
-    <div className="space-y-4 pt-4">
+    <div className="space-y-4 px-4 pt-4 pb-24">
       <Link
         href="/admin"
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground-muted transition-colors hover:text-accent"

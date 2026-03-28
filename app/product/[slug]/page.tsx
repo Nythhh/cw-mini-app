@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import { useProducts } from "@/hooks/useProducts";
-import { formatPrice } from "@/lib/format";
+import { formatGrams, formatPrice } from "@/lib/format";
 
 export default function ProductDetailPage(): JSX.Element {
   const params = useParams<{ slug: string }>();
@@ -61,7 +61,10 @@ export default function ProductDetailPage(): JSX.Element {
         <h1 className="font-display text-2xl tracking-wide text-foreground">
           {product.name}
         </h1>
-        <p className="font-display text-xl text-accent neon-text">{formatPrice(product.price)}</p>
+        <p className="font-display text-xl text-accent neon-text">
+          {formatPrice(product.price)}
+          <span className="text-sm font-sans font-semibold text-foreground-muted"> / g</span>
+        </p>
         <p className="text-sm leading-relaxed text-foreground-muted">{product.shortDescription}</p>
       </div>
 
@@ -70,16 +73,12 @@ export default function ProductDetailPage(): JSX.Element {
         <p className="text-sm leading-relaxed text-foreground-muted">{product.longDescription}</p>
         <div className="flex gap-4 border-t border-accent/10 pt-3">
           <div>
-            <span className="text-xs font-semibold text-foreground-muted">Format</span>
-            <p className="text-sm font-bold text-foreground">{product.format}</p>
-          </div>
-          <div className="border-l border-accent/10 pl-4">
             <span className="text-xs font-semibold text-foreground-muted">Stock</span>
             <div className="flex items-center gap-1.5">
               {inStock ? (
                 <>
                   <CheckCircle2 className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
-                  <span className="text-sm font-bold text-accent">{product.stock}</span>
+                  <span className="text-sm font-bold text-accent">{formatGrams(product.stock)}</span>
                 </>
               ) : (
                 <>
@@ -93,7 +92,7 @@ export default function ProductDetailPage(): JSX.Element {
       </div>
 
       <div className="flex items-center justify-between rounded-2xl bg-surface p-4 neon-border">
-        <QuantitySelector quantity={quantity} onChange={setQuantity} max={product.stock} />
+        <QuantitySelector quantity={quantity} onChange={setQuantity} max={product.stock} unit="g" />
         <Button onClick={() => addItem(product, quantity)} disabled={!inStock}>
           Ajouter au panier 🛒
         </Button>

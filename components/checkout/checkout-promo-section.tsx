@@ -1,6 +1,6 @@
 "use client";
 
-import { Tag } from "lucide-react";
+import { Loader2, Tag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,12 +8,13 @@ import { Input } from "@/components/ui/input";
 interface CheckoutPromoSectionProps {
   input: string;
   onInputChange: (value: string) => void;
-  onApply: () => void;
+  onApply: () => void | Promise<void>;
   onRemove: () => void;
   applied: boolean;
   appliedLabel?: string;
   error: string | null;
   disabled?: boolean;
+  applying?: boolean;
 }
 
 export function CheckoutPromoSection({
@@ -24,7 +25,8 @@ export function CheckoutPromoSection({
   applied,
   appliedLabel,
   error,
-  disabled
+  disabled,
+  applying = false
 }: CheckoutPromoSectionProps): JSX.Element {
   return (
     <div className="rounded-2xl bg-surface p-4 neon-border">
@@ -42,12 +44,12 @@ export function CheckoutPromoSection({
           value={input}
           onChange={(e) => onInputChange(e.target.value.toUpperCase())}
           placeholder="CW10"
-          disabled={disabled || applied}
+          disabled={disabled || applied || applying}
           className="font-mono uppercase"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
-              if (!applied && !disabled) onApply();
+              if (!applied && !disabled && !applying) void onApply();
             }
           }}
         />
@@ -56,8 +58,19 @@ export function CheckoutPromoSection({
             Retirer
           </Button>
         ) : (
-          <Button type="button" onClick={onApply} disabled={disabled || !input.trim()}>
-            Appliquer
+          <Button
+            type="button"
+            onClick={() => void onApply()}
+            disabled={disabled || applying || !input.trim()}
+          >
+            {applying ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                …
+              </>
+            ) : (
+              "Appliquer"
+            )}
           </Button>
         )}
       </div>

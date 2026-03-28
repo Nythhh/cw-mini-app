@@ -20,7 +20,8 @@ interface ProductFormProps {
   onDelete?: () => Promise<void>;
 }
 
-export interface ProductFormData {
+/** Champs éditables (prix au gramme ; pas de champ format). */
+export interface ProductFormFields {
   name: string;
   category: string;
   shortDescription: string;
@@ -29,15 +30,17 @@ export interface ProductFormData {
   image: string;
   stock: number;
   featured: boolean;
-  format: string;
   tags: string[];
 }
+
+/** Payload API — `format` toujours vide (champ retiré de l’UI). */
+export type ProductFormData = ProductFormFields & { format: string };
 
 interface FieldErrors {
   [key: string]: string | undefined;
 }
 
-function validate(data: ProductFormData): FieldErrors {
+function validate(data: ProductFormFields): FieldErrors {
   const errors: FieldErrors = {};
   if (!data.name.trim()) errors.name = "Nom requis";
   if (!data.category.trim()) errors.category = "Catégorie requise";
@@ -49,7 +52,7 @@ function validate(data: ProductFormData): FieldErrors {
 }
 
 export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProps): JSX.Element {
-  const [form, setForm] = useState<ProductFormData>(() => ({
+  const [form, setForm] = useState<ProductFormFields>(() => ({
     name: initialData?.name ?? "",
     category: initialData?.category ?? "",
     shortDescription: initialData?.shortDescription ?? "",
@@ -58,7 +61,6 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
     image: initialData?.image ?? "",
     stock: initialData?.stock ?? 0,
     featured: initialData?.featured ?? false,
-    format: initialData?.format ?? "",
     tags: initialData?.tags ?? []
   }));
 
@@ -80,7 +82,7 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
       .catch(() => {});
   }, []);
 
-  const update = useCallback(<K extends keyof ProductFormData>(field: K, value: ProductFormData[K]) => {
+  const update = useCallback(<K extends keyof ProductFormFields>(field: K, value: ProductFormFields[K]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => ({ ...prev, [field]: undefined }));
   }, []);
@@ -122,7 +124,7 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
     }
     setSaving(true);
     try {
-      await onSubmit(form);
+      await onSubmit({ ...form, format: "" });
       setFeedback("Produit sauvegardé");
       setTimeout(() => setFeedback(null), 3000);
     } catch (e) {
@@ -266,7 +268,7 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
       <div className="grid grid-cols-2 gap-3">
         <label className="block space-y-1.5">
           <span className="text-sm font-semibold text-foreground-muted">
-            Prix (€) <span className="text-red-400">*</span>
+            Prix (€ / g) <span className="text-red-400">*</span>
           </span>
           <Input
             type="number"
@@ -280,7 +282,7 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
         </label>
         <label className="block space-y-1.5">
           <span className="text-sm font-semibold text-foreground-muted">
-            Stock <span className="text-red-400">*</span>
+            Stock (g) <span className="text-red-400">*</span>
           </span>
           <Input
             type="number"
@@ -292,16 +294,6 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
           {errors.stock && <p className="text-xs text-red-400">{errors.stock}</p>}
         </label>
       </div>
-
-      {/* Format */}
-      <label className="block space-y-1.5">
-        <span className="text-sm font-semibold text-foreground-muted">Format</span>
-        <Input
-          value={form.format}
-          onChange={(e) => update("format", e.target.value)}
-          placeholder="3.5g, 10ml, 20 sachets..."
-        />
-      </label>
 
       {/* Tags */}
       <div className="space-y-1.5">

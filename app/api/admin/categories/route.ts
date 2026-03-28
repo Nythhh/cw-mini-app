@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { getCategories, saveCategories } from "@/lib/products-repository";
+import { requireAdminApi } from "@/lib/require-admin-api";
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  const denied = requireAdminApi(req);
+  if (denied) return denied;
+
   const categories = await getCategories();
   return NextResponse.json(
     { categories },
@@ -11,6 +15,9 @@ export async function GET(): Promise<NextResponse> {
 }
 
 export async function PUT(req: NextRequest): Promise<NextResponse> {
+  const denied = requireAdminApi(req);
+  if (denied) return denied;
+
   try {
     const body = await req.json();
     if (!Array.isArray(body.categories) || body.categories.some((c: unknown) => typeof c !== "string")) {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireAdminApi } from "@/lib/require-admin-api";
 import { productUpdateSchema } from "@/lib/validations/product";
 import { uniqueSlug } from "@/lib/slug";
 import { getProducts, saveProducts } from "@/lib/products-repository";
@@ -9,6 +10,9 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
+  const denied = requireAdminApi(req);
+  if (denied) return denied;
+
   const { id } = await params;
 
   let body: unknown;
@@ -53,9 +57,12 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
+  const denied = requireAdminApi(req);
+  if (denied) return denied;
+
   const { id } = await params;
 
   const products = await getProducts();

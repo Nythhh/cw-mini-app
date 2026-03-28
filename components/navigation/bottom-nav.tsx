@@ -41,7 +41,10 @@ export function BottomNav(): JSX.Element {
                   aria-hidden="true"
                 />
                 {label === "Cart" && itemCount > 0 && (
-                  <span className="absolute -right-2.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[9px] font-bold leading-none text-background shadow-neon">
+                  <span
+                    title="Total grammes dans le panier"
+                    className="absolute -right-2.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[9px] font-bold leading-none text-background shadow-neon"
+                  >
                     {itemCount > 99 ? "99+" : itemCount}
                   </span>
                 )}

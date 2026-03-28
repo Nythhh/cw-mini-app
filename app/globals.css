@@ -30,6 +30,11 @@ body {
   color: #f0f6fc;
 }
 
+nextjs-portal {
+  left: 2px;
+  top: 1px;
+}
+
 input,
 textarea,
 select {
