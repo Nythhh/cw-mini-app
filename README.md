@@ -1,6 +1,6 @@
-# CW Telegram Mini App Front-End
+# CW Shop
 
-Premium mobile-first Telegram Mini App storefront for **CW / Canna-Weed** (legal CBD-only shop), built with Next.js App Router and TypeScript.
+Mobile-first storefront for **CW / Canna-Weed** (legal CBD-only shop), built with Next.js App Router and TypeScript.
 
 ## Setup
 
@@ -33,26 +33,27 @@ npx tsc --noEmit
 
 ```text
 app/
-  page.tsx
+  page.tsx              # Home (hero, featured, categories)
   layout.tsx
   globals.css
-  catalog/page.tsx
+  catalog/page.tsx      # Full catalog with filters
   product/[slug]/page.tsx
   cart/page.tsx
-  checkout/page.tsx
+  checkout/page.tsx     # Order via WhatsApp / Signal / Snapchat
   offers/page.tsx
   store/page.tsx
+  api/products/route.ts
 components/
-  ui/
-  layout/
-  navigation/
-  product/
-  cart/
-  checkout/
-  shared/
+  ui/                   # Button, Badge, Input, Select, Textarea, Card
+  layout/               # AppHeader, MainShell
+  navigation/           # BottomNav
+  product/              # ProductCard, ProductGrid, CategoryPills, FilterBar, SearchBar
+  cart/                  # CartItem, QuantitySelector, PriceBlock
+  checkout/             # OrderSummaryCard, ContactMethodSelector, CheckoutPromoSection
+  shared/               # EmptyState, PromoBanner, SectionTitle, StoreInfoCard
 data/
-  products.ts
-  categories.ts
+  products.ts           # 4 static CBD products
+  categories.ts         # Flowers, Resins, Oils, Infusions
   offers.ts
 types/
   product.ts
@@ -61,35 +62,22 @@ types/
 lib/
   utils.ts
   format.ts
-  constants.ts
-  telegram.ts
+  constants.ts          # Branding, contact links
+  promo-codes.ts        # Client-side promo codes
+  checkout-draft.ts     # localStorage draft persistence
 hooks/
-  useCart.ts
-  useFilters.ts
+  useCart.ts             # Cart context + localStorage
+  useFilters.ts          # Search, category, tag, sort
+  useProducts.ts         # Static product data
+  useCheckoutFormPersist.ts
 ```
 
-## What Is Mocked
+## How It Works
 
-- Product catalog and product details (`data/products.ts`)
-- Categories and offers (`data/categories.ts`, `data/offers.ts`)
-- Cart persistence in localStorage (`hooks/useCart.ts`)
-- Promo code UI behavior (front-end only, no real validation)
-- Contact finalization links (Telegram/WhatsApp/Snapchat placeholders)
-
-## What To Connect Later
-
-### Backend
-
-- Replace mock datasets with API calls (catalog, stock, offers, pricing).
-- Validate promo codes server-side.
-- Create real order endpoint and order status tracking.
-- Add inventory checks and delivery rules from backend.
-
-### Telegram APIs
-
-- Wire real Telegram WebApp SDK state and theme events in `lib/telegram.ts`.
-- Pull Telegram user data (first name/username) automatically.
-- Use Telegram native main button / back button if needed.
+- **Products** are static data in `data/products.ts` (4 CBD products across 4 categories).
+- **Cart** is persisted in localStorage.
+- **Checkout** generates a pre-filled WhatsApp message or copies it for Signal/Snapchat.
+- **Promo codes** are validated client-side (`lib/promo-codes.ts`).
 
 ## Where To Edit Quickly
 
@@ -98,10 +86,5 @@ hooks/
 - **Offers:** `data/offers.ts`
 - **Branding text:** `lib/constants.ts`
 - **Contact links:** `lib/constants.ts`
+- **Promo codes:** `lib/promo-codes.ts`
 - **Theme / visual style:** `app/globals.css`, `tailwind.config.ts`
-
-## Notes
-
-- Front-end only implementation by design.
-- No auth and no payment integration included.
-- Built for Telegram mobile viewport first with sticky bottom navigation.

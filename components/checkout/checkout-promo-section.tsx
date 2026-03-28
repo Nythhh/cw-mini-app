@@ -33,7 +33,7 @@ export function CheckoutPromoSection({
         <span className="font-display text-base tracking-wide text-accent">Code promo</span>
       </div>
       <p className="mb-3 text-xs text-foreground-muted">
-        Les codes sont validés ici pour l’instant ; la liste sera gérée depuis ton futur admin.
+        Entre ton code promo pour bénéficier d’une réduction.
       </p>
       <div className="flex gap-2">
         <Input

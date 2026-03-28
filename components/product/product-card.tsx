@@ -31,6 +31,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps): JSX.Eleme
     >
       <Link href={`/product/${product.slug}`} className="group block">
         <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface neon-border">
+          {/* eslint-disable-next-line @next/next/no-img-element -- external product URLs */}
           <img
             src={product.image}
             alt={product.name}

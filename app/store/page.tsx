@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { Clock3, MapPin, MessageSquareText, Info, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { Clock3, MapPin, MessageSquareText, Info, ShieldCheck, Settings } from "lucide-react";
 
 import { SectionTitle } from "@/components/shared/section-title";
 import { StoreInfoCard } from "@/components/shared/store-info-card";
@@ -82,6 +83,16 @@ export default function StorePage(): JSX.Element {
             <a href={CONTACT_LINKS.snapchat} target="_blank" rel="noreferrer">👻 Snapchat</a>
           </Button>
         </div>
+      </div>
+
+      {/* Admin access */}
+      <div className="pt-4 pb-4">
+        <Button variant="outline" asChild className="w-full text-foreground-muted">
+          <Link href="/admin">
+            <Settings size={16} className="mr-2" />
+            Administration
+          </Link>
+        </Button>
       </div>
     </div>
   );

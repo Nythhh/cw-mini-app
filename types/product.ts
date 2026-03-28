@@ -1,9 +1,3 @@
-export type ProductCategory =
-  | "Flowers"
-  | "Resins"
-  | "Oils"
-  | "Infusions";
-
 export type ProductTag =
   | "Premium"
   | "Local"
@@ -18,7 +12,7 @@ export interface Product {
   id: string;
   slug: string;
   name: string;
-  category: ProductCategory;
+  category: string;
   shortDescription: string;
   longDescription: string;
   price: number;

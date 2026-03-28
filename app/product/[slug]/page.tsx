@@ -47,7 +47,7 @@ export default function ProductDetailPage(): JSX.Element {
       </Link>
 
       <div className="relative -mx-4 aspect-square overflow-hidden rounded-b-3xl bg-surface">
-        {/* eslint-disable-next-line @next/next/no-img-element -- URLs dynamiques (admin) */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- external product URLs */}
         <img
           src={product.image}
           alt={product.name}

@@ -24,7 +24,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }): JSX.Element {
   return (
-    <html lang="fr" className="dark" suppressHydrationWarning>
+    <html lang="fr" className="dark" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className="min-h-dvh bg-background font-sans text-foreground" suppressHydrationWarning>
         <CartProvider>
           <AppHeader />

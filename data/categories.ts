@@ -1,6 +1,5 @@
-import type { ProductCategory } from "@/types/product";
-
-export const CATEGORIES: ProductCategory[] = [
+/** Default categories — admin can add new ones freely. */
+export const DEFAULT_CATEGORIES: string[] = [
   "Flowers",
   "Resins",
   "Oils",

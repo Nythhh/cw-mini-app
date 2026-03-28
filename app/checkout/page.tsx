@@ -166,7 +166,7 @@ export default function CheckoutPage(): JSX.Element {
         onSubmit={(e) => e.preventDefault()}
       >
         <p className="text-xs text-foreground-muted/80">
-          Préremplissage : navigateur (saisie automatique) + dernière session sur cet appareil + Telegram (prénom si dispo).
+          Préremplissage : navigateur (saisie automatique) + dernière session sur cet appareil.
         </p>
         <label className="block space-y-1.5">
           <span className="text-sm font-semibold text-foreground-muted">

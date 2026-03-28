@@ -18,10 +18,6 @@ export function BottomNav(): JSX.Element {
   const pathname = usePathname();
   const { totalItems: itemCount } = useCart();
 
-  if (pathname.startsWith("/admin")) {
-    return <></>;
-  }
-
   return (
     <nav
       aria-label="Main navigation"
@@ -46,7 +42,7 @@ export function BottomNav(): JSX.Element {
                 />
                 {label === "Cart" && itemCount > 0 && (
                   <span className="absolute -right-2.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[9px] font-bold leading-none text-background shadow-neon">
-                    {itemCount > 9 ? "9+" : itemCount}
+                    {itemCount > 99 ? "99+" : itemCount}
                   </span>
                 )}
               </span>

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-import type { Product, ProductCategory } from "@/types/product";
+import type { Product } from "@/types/product";
 
 export type SortOption = "featured" | "price-asc" | "price-desc" | "name";
 
@@ -21,7 +21,7 @@ export function isSortOption(value: string): value is SortOption {
 
 export function useFilters(products: Product[]) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<ProductCategory | "All">("All");
+  const [activeCategory, setActiveCategory] = useState<string>("All");
   const [activeTag, setActiveTag] = useState<string>("All");
   const [sortBy, setSortBy] = useState<SortOption>("featured");
 

@@ -1,34 +1,34 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { CategoryPills } from "@/components/product/category-pills";
 import { FilterBar } from "@/components/product/filter-bar";
 import { ProductGrid } from "@/components/product/product-grid";
 import { SearchBar } from "@/components/product/search-bar";
 import { SectionTitle } from "@/components/shared/section-title";
-import { CATEGORIES } from "@/data/categories";
+import { DEFAULT_CATEGORIES } from "@/data/categories";
 import { useFilters } from "@/hooks/useFilters";
 import { useProducts } from "@/hooks/useProducts";
-import type { ProductCategory } from "@/types/product";
 
-export default function CatalogPage(): JSX.Element {
+function CatalogContent(): JSX.Element {
   const { products } = useProducts();
-  const list = products;
+  const searchParams = useSearchParams();
   const {
     searchQuery, setSearchQuery,
     activeCategory, setActiveCategory,
     activeTag, setActiveTag,
     sortBy, setSortBy,
     availableTags, filteredProducts
-  } = useFilters(list);
+  } = useFilters(products);
 
   useEffect(() => {
-    const c = new URLSearchParams(window.location.search).get("category");
-    if (c && CATEGORIES.includes(c as ProductCategory)) {
-      setActiveCategory(c as ProductCategory);
+    const c = searchParams.get("category");
+    if (c) {
+      setActiveCategory(c);
     }
-  }, [setActiveCategory]);
+  }, [searchParams, setActiveCategory]);
 
   const activeCat = activeCategory === "All" ? null : activeCategory;
 
@@ -37,7 +37,7 @@ export default function CatalogPage(): JSX.Element {
       <SectionTitle title="Catalogue 🌿" subtitle="Tous nos produits CBD légaux" />
       <SearchBar value={searchQuery} onChange={setSearchQuery} />
       <CategoryPills
-        categories={CATEGORIES}
+        categories={DEFAULT_CATEGORIES}
         active={activeCat}
         onChange={(cat) => setActiveCategory(cat ?? "All")}
       />
@@ -50,5 +50,13 @@ export default function CatalogPage(): JSX.Element {
       />
       <ProductGrid products={filteredProducts} />
     </div>
+  );
+}
+
+export default function CatalogPage(): JSX.Element {
+  return (
+    <Suspense>
+      <CatalogContent />
+    </Suspense>
   );
 }

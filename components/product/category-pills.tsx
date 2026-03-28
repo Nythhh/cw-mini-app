@@ -1,11 +1,9 @@
 "use client";
 
-import type { ProductCategory } from "@/types/product";
-
 interface CategoryPillsProps {
-  categories: ProductCategory[];
-  active: ProductCategory | null;
-  onChange: (category: ProductCategory | null) => void;
+  categories: string[];
+  active: string | null;
+  onChange: (category: string | null) => void;
 }
 
 export function CategoryPills({ categories, active, onChange }: CategoryPillsProps): JSX.Element {

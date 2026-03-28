@@ -9,7 +9,7 @@ import { ProductGrid } from "@/components/product/product-grid";
 import { PromoBanner } from "@/components/shared/promo-banner";
 import { SectionTitle } from "@/components/shared/section-title";
 import { Button } from "@/components/ui/button";
-import { CATEGORIES } from "@/data/categories";
+import { DEFAULT_CATEGORIES } from "@/data/categories";
 import { useProducts } from "@/hooks/useProducts";
 import { BRAND } from "@/lib/constants";
 
@@ -73,7 +73,7 @@ export default function HomePage(): JSX.Element {
       <motion.section variants={fadeUp}>
         <SectionTitle title="Categories" />
         <div className="grid grid-cols-3 gap-2">
-          {CATEGORIES.slice(0, 6).map((category) => (
+          {DEFAULT_CATEGORIES.slice(0, 6).map((category) => (
             <Link
               key={category}
               href={`/catalog?category=${encodeURIComponent(category)}`}
