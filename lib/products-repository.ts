@@ -11,8 +11,8 @@ const DEV_FILE = path.join(process.cwd(), "data", "products-store.json");
 let redis: Redis | null = null;
 
 function getRedisCredentials(): { url: string; token: string } | null {
-  const url = process.env.UPSTASH_REDIS_REST_URL?.trim();
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN?.trim();
+  const url = (process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL)?.trim();
+  const token = (process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN)?.trim();
   if (!url || !token) return null;
   return { url, token };
 }
@@ -86,5 +86,5 @@ export async function saveProducts(products: Product[]): Promise<void> {
     await writeDevFile(products);
     return;
   }
-  throw new Error("No persistence available — configure UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN");
+  throw new Error("No persistence available — configure KV_REST_API_URL and KV_REST_API_TOKEN");
 }
