@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Trash2, Save, Loader2, ImageIcon, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { DEFAULT_CATEGORIES } from "@/data/categories";
 import type { Product, ProductTag } from "@/types/product";
 
 const ALL_TAGS: ProductTag[] = [
@@ -63,6 +62,7 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
     tags: initialData?.tags ?? []
   }));
 
+  const [categorySuggestions, setCategorySuggestions] = useState<string[]>([]);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -70,6 +70,15 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetch("/api/admin/categories", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data: { categories?: string[] }) => {
+        if (Array.isArray(data.categories)) setCategorySuggestions(data.categories);
+      })
+      .catch(() => {});
+  }, []);
 
   const update = useCallback(<K extends keyof ProductFormData>(field: K, value: ProductFormData[K]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -135,7 +144,7 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
   }, [onDelete]);
 
   return (
-    <div className="space-y-4 pb-28">
+    <div className="space-y-4 pb-4">
       {/* Image preview */}
       <div className="overflow-hidden rounded-2xl bg-surface neon-border">
         {form.image && /^https?:\/\/.+/i.test(form.image) ? (
@@ -222,7 +231,7 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
           list="category-suggestions"
         />
         <datalist id="category-suggestions">
-          {DEFAULT_CATEGORIES.map((c) => (
+          {categorySuggestions.map((c) => (
             <option key={c} value={c} />
           ))}
         </datalist>
@@ -329,6 +338,26 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
         <span className="text-sm font-semibold text-foreground-muted">Produit mis en avant (Featured)</span>
       </label>
 
+      <Button
+        type="button"
+        className="w-full"
+        onClick={handleSubmit}
+        disabled={saving}
+      >
+        {saving ? (
+          <Loader2 size={16} className="mr-2 animate-spin" />
+        ) : (
+          <Save size={16} className="mr-2" />
+        )}
+        {saving ? "Sauvegarde…" : "Sauvegarder"}
+      </Button>
+
+      {feedback && (
+        <p className="text-center text-sm font-semibold text-accent" role="status">
+          {feedback}
+        </p>
+      )}
+
       {/* Delete */}
       {onDelete && !showDeleteConfirm && (
         <Button
@@ -367,32 +396,6 @@ export function ProductForm({ initialData, onSubmit, onDelete }: ProductFormProp
           </div>
         </div>
       )}
-
-      {/* Feedback */}
-      {feedback && (
-        <p className="text-center text-sm font-semibold text-accent" role="status">
-          {feedback}
-        </p>
-      )}
-
-      {/* Sticky save button */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-accent/10 bg-background/95 px-4 py-3 backdrop-blur">
-        <div className="mx-auto max-w-md">
-          <Button
-            type="button"
-            className="w-full"
-            onClick={handleSubmit}
-            disabled={saving}
-          >
-            {saving ? (
-              <Loader2 size={16} className="mr-2 animate-spin" />
-            ) : (
-              <Save size={16} className="mr-2" />
-            )}
-            {saving ? "Sauvegarde…" : "Sauvegarder"}
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { Plus, Package } from "lucide-react";
 
 import { SectionTitle } from "@/components/shared/section-title";
 import { EmptyState } from "@/components/shared/empty-state";
+import { CategoryManager } from "@/components/admin/category-manager";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/types/product";
@@ -37,6 +38,9 @@ export default function AdminPage(): JSX.Element {
   return (
     <div className="space-y-4 pt-4 pb-24">
       <SectionTitle title="Admin" subtitle="Gestion des produits" />
+
+      {/* Category management */}
+      <CategoryManager />
 
       {loading && <p className="text-sm text-foreground-muted">Chargement…</p>}
 

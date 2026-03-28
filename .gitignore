@@ -13,3 +13,5 @@ coverage
 .env*.local
 .env.vercel-sync
 data/products-store.json
+
+.vercel
