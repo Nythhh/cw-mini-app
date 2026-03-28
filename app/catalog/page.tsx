@@ -13,8 +13,8 @@ import { useProducts } from "@/hooks/useProducts";
 import type { ProductCategory } from "@/types/product";
 
 export default function CatalogPage(): JSX.Element {
-  const { products, loading, error } = useProducts({ refreshMs: 8000 });
-  const list = products ?? [];
+  const { products } = useProducts();
+  const list = products;
   const {
     searchQuery, setSearchQuery,
     activeCategory, setActiveCategory,
@@ -35,8 +35,6 @@ export default function CatalogPage(): JSX.Element {
   return (
     <div className="space-y-4 pt-4">
       <SectionTitle title="Catalogue 🌿" subtitle="Tous nos produits CBD légaux" />
-      {error && <p className="text-xs text-red-400">{error}</p>}
-      {loading && !products && <p className="text-sm text-foreground-muted">Chargement du catalogue…</p>}
       <SearchBar value={searchQuery} onChange={setSearchQuery} />
       <CategoryPills
         categories={CATEGORIES}

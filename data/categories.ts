@@ -4,8 +4,5 @@ export const CATEGORIES: ProductCategory[] = [
   "Flowers",
   "Resins",
   "Oils",
-  "Infusions",
-  "Vape",
-  "Packs",
-  "Accessories"
+  "Infusions"
 ];

@@ -20,18 +20,14 @@ export default function ProductDetailPage(): JSX.Element {
   const params = useParams<{ slug: string }>();
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
-  const { products, loading } = useProducts({ refreshMs: 8000 });
+  const { products } = useProducts();
 
-  const product = products?.find((p) => p.slug === params.slug);
+  const product = products.find((p) => p.slug === params.slug);
 
   const relatedProducts = useMemo(() => {
-    if (!product || !products) return [];
+    if (!product) return [];
     return products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
   }, [product, products]);
-
-  if (loading && !products) {
-    return <p className="pt-8 text-sm text-foreground-muted">Chargement…</p>;
-  }
 
   if (!product) {
     return <EmptyState icon={PackageSearch} title="Produit introuvable" description="Ce produit n'existe pas ou n'est plus disponible." />;

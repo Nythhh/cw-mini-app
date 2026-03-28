@@ -11,6 +11,3 @@ coverage
 .env
 .env.local
 .env*.local
-
-# Stock admin (dev local)
-data/products-store.json

@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 
-import { getProducts } from "@/lib/products-repository";
+import { PRODUCTS } from "@/data/products";
 
 export async function GET(): Promise<NextResponse> {
-  const products = await getProducts();
   return NextResponse.json(
-    { products },
-    { headers: { "Cache-Control": "no-store, must-revalidate" } }
+    { products: PRODUCTS },
+    { headers: { "Cache-Control": "public, max-age=60" } }
   );
 }

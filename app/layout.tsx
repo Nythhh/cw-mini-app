@@ -5,7 +5,6 @@ import "./globals.css";
 
 import { AppHeader } from "@/components/layout/app-header";
 import { MainShell } from "@/components/layout/main-shell";
-import { TelegramInit } from "@/components/layout/telegram-init";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { CartProvider } from "@/hooks/useCart";
 import { BRAND } from "@/lib/constants";
@@ -26,11 +25,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }): JSX.Element {
   return (
     <html lang="fr" className="dark" suppressHydrationWarning>
-      <head>
-        <script src="https://telegram.org/js/telegram-web-app.js" />
-      </head>
       <body className="min-h-dvh bg-background font-sans text-foreground" suppressHydrationWarning>
-        <TelegramInit />
         <CartProvider>
           <AppHeader />
           <MainShell>{children}</MainShell>

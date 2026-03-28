@@ -2,10 +2,7 @@ export type ProductCategory =
   | "Flowers"
   | "Resins"
   | "Oils"
-  | "Infusions"
-  | "Vape"
-  | "Packs"
-  | "Accessories";
+  | "Infusions";
 
 export type ProductTag =
   | "Premium"

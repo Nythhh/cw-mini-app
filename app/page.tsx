@@ -31,8 +31,8 @@ const fadeUp = {
 };
 
 export default function HomePage(): JSX.Element {
-  const { products, loading } = useProducts({ refreshMs: 10_000 });
-  const featured = (products ?? []).filter((p) => p.featured).slice(0, 4);
+  const { products } = useProducts();
+  const featured = products.filter((p) => p.featured).slice(0, 4);
 
   return (
     <motion.div className="space-y-8" variants={stagger} initial={false} animate="show">
@@ -88,11 +88,7 @@ export default function HomePage(): JSX.Element {
       {/* Featured */}
       <motion.section variants={fadeUp}>
         <SectionTitle title="Best sellers 🔥" subtitle="Les plus demandés cette semaine" />
-        {loading && !products ? (
-          <p className="text-sm text-foreground-muted">Chargement…</p>
-        ) : (
-          <ProductGrid products={featured} />
-        )}
+        <ProductGrid products={featured} />
       </motion.section>
 
       {/* Promo */}

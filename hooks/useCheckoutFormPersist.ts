@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { readCheckoutDraft, writeCheckoutDraft } from "@/lib/checkout-draft";
-import { getTelegramUser } from "@/lib/telegram";
 import type { CheckoutFormValues, ContactMethod } from "@/types/checkout";
 
 const SAVE_DEBOUNCE_MS = 450;
@@ -33,14 +32,13 @@ export function useCheckoutFormPersist(
 
   useEffect(() => {
     const draft = readCheckoutDraft();
-    const tg = getTelegramUser();
 
     setForm((prev) => {
       const merged: CheckoutFormValues = {
         firstName:
           draft?.firstName !== undefined && String(draft.firstName).length > 0
             ? draft.firstName
-            : (tg?.first_name ?? prev.firstName),
+            : prev.firstName,
         phone: draft?.phone ?? prev.phone,
         address: draft?.address ?? prev.address,
         note:
